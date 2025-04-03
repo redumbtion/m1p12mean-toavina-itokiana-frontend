@@ -1,29 +1,47 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-  email: string = '';
-  password: string = '';
-  isLoading: boolean = false;
+  loginForm: FormGroup;
+  isLoading = false;
   error: string | null = null;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+    });
+  }
 
   onSubmit() {
+    if (this.loginForm.invalid) {
+      return;
+    }
+
     this.isLoading = true;
     this.error = null;
 
-    this.authService.login(this.email, this.password).subscribe({
+    const { email, password } = this.loginForm.value;
+    this.authService.login(email, password).subscribe({
       next: () => {
         this.router.navigate(['/dashboard']);
       },
@@ -32,5 +50,12 @@ export class LoginComponent {
         this.isLoading = false;
       },
     });
+  }
+
+  get email() {
+    return this.loginForm.get('email');
+  }
+  get password() {
+    return this.loginForm.get('password');
   }
 }

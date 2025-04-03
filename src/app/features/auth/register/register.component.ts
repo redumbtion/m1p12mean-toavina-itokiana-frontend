@@ -1,6 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 
@@ -15,38 +20,48 @@ interface RegisterForm {
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent {
-  form: RegisterForm = {
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    role: 'client',
-  };
+  registerForm: FormGroup;
   isLoading = false;
   error: string | null = null;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
+    this.registerForm = this.fb.group(
+      {
+        name: ['', [Validators.required, Validators.minLength(2)]],
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', [Validators.required, Validators.minLength(6)]],
+        confirmPassword: ['', [Validators.required]],
+        role: ['client', [Validators.required]],
+      },
+      { validators: this.passwordMatchValidator }
+    );
+  }
+
+  passwordMatchValidator(g: FormGroup) {
+    return g.get('password')?.value === g.get('confirmPassword')?.value
+      ? null
+      : { mismatch: true };
+  }
 
   onSubmit() {
-    if (this.form.password.length < 6) {
-      this.error = 'Password must be at least 6 characters long';
-      return;
-    }
-
-    if (this.form.password !== this.form.confirmPassword) {
-      this.error = 'Passwords do not match';
+    if (this.registerForm.invalid) {
       return;
     }
 
     this.isLoading = true;
     this.error = null;
 
-    this.authService.register(this.form).subscribe({
+    const formData = this.registerForm.value;
+    this.authService.register(formData).subscribe({
       next: () => {
         this.router.navigate(['/login']);
       },
@@ -55,5 +70,21 @@ export class RegisterComponent {
         this.isLoading = false;
       },
     });
+  }
+
+  get name() {
+    return this.registerForm.get('name');
+  }
+  get email() {
+    return this.registerForm.get('email');
+  }
+  get password() {
+    return this.registerForm.get('password');
+  }
+  get confirmPassword() {
+    return this.registerForm.get('confirmPassword');
+  }
+  get role() {
+    return this.registerForm.get('role');
   }
 }
