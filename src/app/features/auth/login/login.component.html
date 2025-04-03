@@ -19,7 +19,11 @@
         [(ngModel)]="password"
         name="password"
         required
+        minlength="6"
       />
+      <div class="password-hint">
+        Password must be at least 6 characters long
+      </div>
     </div>
     <div class="error-message" *ngIf="error">{{ error }}</div>
     <button type="submit" [disabled]="isLoading">

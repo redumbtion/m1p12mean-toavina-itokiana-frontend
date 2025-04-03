@@ -12,9 +12,8 @@ export interface User {
   name: string;
 }
 
-interface LoginResponse {
-  user: User;
-  token: string;
+interface LoginResponse extends User {
+  accessToken: string; // Added accessToken property
 }
 
 interface RegisterForm {
@@ -44,10 +43,12 @@ export class AuthService {
       this.httpService
         .post<LoginResponse>('/auth/login', { email, password })
         .then((response) => {
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('currentUser', JSON.stringify(response.user));
-          this.currentUserSubject.next(response.user);
-          subscriber.next(response.user);
+          const { accessToken, ...user } = response;
+          localStorage.setItem('token', response.accessToken);
+
+          localStorage.setItem('currentUser', JSON.stringify(user));
+          this.currentUserSubject.next(user);
+          subscriber.next(user);
           subscriber.complete();
         })
         .catch((error) => {

@@ -29,7 +29,11 @@
         [(ngModel)]="form.password"
         name="password"
         required
+        minlength="6"
       />
+      <div class="password-hint">
+        Password must be at least 6 characters long
+      </div>
     </div>
     <div class="form-group">
       <label for="confirmPassword">Confirm Password:</label>

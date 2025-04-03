@@ -33,6 +33,11 @@ export class RegisterComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit() {
+    if (this.form.password.length < 6) {
+      this.error = 'Password must be at least 6 characters long';
+      return;
+    }
+
     if (this.form.password !== this.form.confirmPassword) {
       this.error = 'Passwords do not match';
       return;
