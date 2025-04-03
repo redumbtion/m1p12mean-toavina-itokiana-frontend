@@ -1,12 +1,26 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
+import { HttpService } from '../http/http.service';
 
-export type UserRole = 'client' | 'mechanic' | 'staff';
+export type UserRole = 'client' | 'mechanic' | 'manager';
 
 export interface User {
   id: string;
   email: string;
+  role: UserRole;
+  name: string;
+}
+
+interface LoginResponse {
+  user: User;
+  token: string;
+}
+
+interface RegisterForm {
+  name: string;
+  email: string;
+  password: string;
   role: UserRole;
 }
 
@@ -17,7 +31,7 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private httpService: HttpService) {
     // Check if user is already logged in (from localStorage)
     const storedUser = localStorage.getItem('currentUser');
     if (storedUser) {
@@ -26,45 +40,38 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<User> {
-    const mockData = [
-      {
-        id: '1',
-        email: 'client@test.com',
-        password: 'password',
-        role: 'client' as UserRole,
-      },
-      {
-        id: '2',
-        email: 'mechanic@test.com',
-        password: 'password',
-        role: 'mechanic' as UserRole,
-      },
-      {
-        id: '3',
-        email: 'staff@test.com',
-        password: 'password',
-        role: 'staff' as UserRole,
-      },
-    ];
-    // TODO: Make an HTTP request to the backend
-    const user = mockData.find(
-      (user) => user.email === email && user.password === password
-    );
-    if (!user) {
-      throw new Error('Invalid email or password');
-    }
     return new Observable((subscriber) => {
-      // Simulate API call
-      setTimeout(() => {
-        this.currentUserSubject.next(user);
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        subscriber.next(user);
-        subscriber.complete();
-      }, 1000);
+      this.httpService
+        .post<LoginResponse>('/auth/login', { email, password })
+        .then((response) => {
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('currentUser', JSON.stringify(response.user));
+          this.currentUserSubject.next(response.user);
+          subscriber.next(response.user);
+          subscriber.complete();
+        })
+        .catch((error) => {
+          subscriber.error(error);
+        });
+    });
+  }
+
+  register(form: RegisterForm): Observable<void> {
+    return new Observable((subscriber) => {
+      this.httpService
+        .post<void>('/auth/register', form)
+        .then(() => {
+          subscriber.next();
+          subscriber.complete();
+        })
+        .catch((error) => {
+          subscriber.error(error);
+        });
     });
   }
 
   logout(): void {
+    localStorage.removeItem('token');
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
     this.router.navigate(['/login']);
