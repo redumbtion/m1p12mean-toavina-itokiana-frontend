@@ -11,6 +11,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'register',
+    loadComponent: () =>
+      import('./features/auth/register/register.component').then(
+        (m) => m.RegisterComponent
+      ),
+  },
+  {
     path: 'dashboard',
     loadComponent: () =>
       import('./features/dashboard/dashboard.component').then(
@@ -24,7 +31,7 @@ export const routes: Routes = [
       import('./features/profile/profile.component').then(
         (m) => m.ProfileComponent
       ),
-    canActivate: [authGuard, roleGuard(['client', 'staff'])],
+    canActivate: [authGuard, roleGuard(['client', 'manager'])],
   },
   {
     path: '',

@@ -9,25 +9,26 @@ import { AuthService } from '../../../core/auth/auth.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
   email: string = '';
   password: string = '';
   isLoading: boolean = false;
+  error: string | null = null;
 
   constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit() {
     this.isLoading = true;
+    this.error = null;
+
     this.authService.login(this.email, this.password).subscribe({
       next: () => {
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
-        console.error('Login failed:', error);
-      },
-      complete: () => {
+        this.error = error.message || 'Login failed';
         this.isLoading = false;
       },
     });

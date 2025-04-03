@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/auth/auth.service';
 import { ClientDashboardComponent } from './client-dashboard/client-dashboard.component';
 import { MechanicDashboardComponent } from './mechanic-dashboard/mechanic-dashboard.component';
-import { StaffDashboardComponent } from './staff-dashboard/staff-dashboard.component';
+import { ManagerDashboardComponent } from './manager-dashboard/manager-dashboard.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,7 +12,7 @@ import { StaffDashboardComponent } from './staff-dashboard/staff-dashboard.compo
     CommonModule,
     ClientDashboardComponent,
     MechanicDashboardComponent,
-    StaffDashboardComponent,
+    ManagerDashboardComponent,
   ],
   templateUrl: './dashboard.component.html',
 })
