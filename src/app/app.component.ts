@@ -1,12 +1,25 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { AuthService } from './core/auth/auth.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  title = 'm1p12mean-toavina-itokiana-frontend';
+  isAuthenticated = false;
+
+  constructor(private authService: AuthService) {
+    this.authService.currentUser$.subscribe((user) => {
+      this.isAuthenticated = !!user;
+    });
+  }
+
+  logout() {
+    this.authService.logout();
+  }
 }
