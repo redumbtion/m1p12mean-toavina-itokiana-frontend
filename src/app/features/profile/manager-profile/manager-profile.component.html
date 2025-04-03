@@ -1,0 +1,50 @@
+<div class="profile-container">
+  <h2>Manager Profile</h2>
+  <div class="profile-content">
+    <div class="profile-section">
+      <h3>Personal Information</h3>
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" [(ngModel)]="name" name="name" />
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" [(ngModel)]="email" name="email" />
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone</label>
+        <input type="tel" id="phone" [(ngModel)]="phone" name="phone" />
+      </div>
+    </div>
+    <div class="profile-section">
+      <h3>Manager Information</h3>
+      <div class="form-group">
+        <label for="department">Department</label>
+        <input
+          type="text"
+          id="department"
+          [(ngModel)]="department"
+          name="department"
+        />
+      </div>
+      <div class="form-group">
+        <label for="position">Position</label>
+        <input
+          type="text"
+          id="position"
+          [(ngModel)]="position"
+          name="position"
+        />
+      </div>
+      <div class="form-group">
+        <label for="employeeId">Employee ID</label>
+        <input
+          type="text"
+          id="employeeId"
+          [(ngModel)]="employeeId"
+          name="employeeId"
+        />
+      </div>
+    </div>
+  </div>
+</div>

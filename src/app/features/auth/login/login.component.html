@@ -1,0 +1,36 @@
+<div class="login-container">
+  <h2>Login</h2>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input type="email" id="email" formControlName="email" />
+      <div
+        class="error-message"
+        *ngIf="email?.invalid && (email?.dirty || email?.touched)"
+      >
+        <div *ngIf="email?.errors?.['required']">Email is required</div>
+        <div *ngIf="email?.errors?.['email']">Please enter a valid email</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password" id="password" formControlName="password" />
+      <div
+        class="error-message"
+        *ngIf="password?.invalid && (password?.dirty || password?.touched)"
+      >
+        <div *ngIf="password?.errors?.['required']">Password is required</div>
+        <div *ngIf="password?.errors?.['minlength']">
+          Password must be at least 6 characters long
+        </div>
+      </div>
+    </div>
+    <div class="error-message" *ngIf="error">{{ error }}</div>
+    <button type="submit" [disabled]="loginForm.invalid || isLoading">
+      {{ isLoading ? "Loading..." : "Login" }}
+    </button>
+  </form>
+  <div class="register-link">
+    Don't have an account? <a href="/register">Register</a>
+  </div>
+</div>

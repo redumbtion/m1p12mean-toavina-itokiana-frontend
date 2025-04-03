@@ -1,0 +1,5 @@
+<ng-container [ngSwitch]="currentRole">
+  <app-client-profile *ngSwitchCase="'client'"></app-client-profile>
+  <app-mechanic-profile *ngSwitchCase="'mechanic'"></app-mechanic-profile>
+  <app-manager-profile *ngSwitchCase="'manager'"></app-manager-profile>
+</ng-container>
