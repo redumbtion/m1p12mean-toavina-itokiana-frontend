@@ -1,13 +1,4 @@
-<nav class="navbar" *ngIf="isAuthenticated">
-  <div class="navbar-brand">Auto App</div>
-  <div class="navbar-menu">
-    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-    <a routerLink="/profile" routerLinkActive="active">Profile</a>
-  </div>
-  <div class="navbar-end">
-    <button (click)="logout()">Logout</button>
-  </div>
-</nav>
-<main class="main-content">
+<app-navbar></app-navbar>
+<main>
   <router-outlet></router-outlet>
 </main>

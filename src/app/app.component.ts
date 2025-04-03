@@ -1,25 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { AuthService } from './core/auth/auth.service';
+import { RouterOutlet } from '@angular/router';
+import { NavbarComponent } from './shared/components/navbar/navbar.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterOutlet, NavbarComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  isAuthenticated = false;
-
-  constructor(private authService: AuthService) {
-    this.authService.currentUser$.subscribe((user) => {
-      this.isAuthenticated = !!user;
-    });
-  }
-
-  logout() {
-    this.authService.logout();
-  }
+  title = 'car-service';
 }
